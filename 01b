@@ -1,0 +1,15 @@
+#!/usr/bin/perl
+
+use v5.42;
+
+my ($old, $n) = (50, 0);
+while (<>) {
+    my $new = eval($old . tr/LR/-+/r);
+    if ($new <= 0) {
+        $n += int($new / -100) + ($old ? 1 : 0);
+    } elsif ($new >= 100) {
+        $n += int(($new - 100) / 100) + 1;
+    }
+    $old = $new % 100;
+}
+say $n;
