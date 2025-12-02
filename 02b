@@ -1,0 +1,12 @@
+#!/usr/bin/perl
+
+use v5.42;
+
+my $result = 0;
+for (split /,/, <>) {
+    my ($first, $last) = split /-/;
+    for ($first..$last) {
+        $result += $_ if /\A(\d+)\1+\z/;
+    }
+}
+say $result;
