@@ -1,0 +1,9 @@
+#!/usr/bin/perl
+
+use v5.42;
+
+my ($dial, $n) = (50);
+while (<>) {
+    ++$n unless $dial = eval($dial . tr/LR/-+/r) % 100;
+}
+say $n;
