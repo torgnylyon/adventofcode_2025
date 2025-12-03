@@ -1,0 +1,11 @@
+#!/usr/bin/perl
+
+use v5.42;
+
+my $sum = 0;
+while (<>) {
+    chomp;
+    my $max = (sort split //, substr $_, 0, -1)[-1];
+    $sum += $max . (sort split //, substr $_, index($_, $max) + 1)[-1];
+}
+say $sum;
