@@ -1,0 +1,52 @@
+#!/usr/bin/perl
+
+use v5.42;
+
+sub read_diagram {
+    my $diagram = [];
+    push @$diagram, [split /\n*/] while <>;
+    $diagram;
+}
+
+sub get_grid_height {
+    my $diagram = shift;
+    scalar @$diagram;
+}
+
+sub get_grid_width {
+    my $diagram = shift;
+    scalar @{ $diagram->[0] };
+}
+
+sub is_roll {
+    my ($diagram, $x, $y) = @_;
+    $diagram->[$y][$x] eq '@';
+}
+
+sub is_on_grid {
+    my ($diagram, $x, $y) = @_;
+    $x >= 0 and $x < get_grid_width($diagram) and $y >= 0
+            and $y < get_grid_height($diagram);
+}
+
+sub count_adjacent {
+    my ($diagram, $x, $y) = @_;
+    my $n = 0;
+    for my $i (-1..1) {
+        for my $j (-1..1) {
+            ++$n if ($i or $j) and is_on_grid($diagram, $x + $i, $y + $j)
+                and is_roll($diagram, $x + $i, $y + $j);
+        }
+    }
+    $n;
+}
+
+my $diagram = read_diagram();
+my $accessible = 0;
+for my $y (0..get_grid_height($diagram) - 1) {
+    for my $x (0..get_grid_width($diagram) - 1) {
+        ++$accessible if is_roll($diagram, $x, $y)
+                and count_adjacent($diagram, $x, $y) < 4;
+    }
+}
+say $accessible;
