@@ -1,0 +1,20 @@
+#!/usr/bin/perl
+
+use v5.42;
+
+use List::Util qw(max);
+
+my $total = 0;
+while (<>) {
+    chomp;
+    my @bank = split //;
+    my $start = 0;
+    my @joltage;
+    for (my $i = 12; $i > 0; --$i) {
+        my $max = max(@bank[$start..@bank - $i]);
+        $start += index(substr($_, $start), $max) + 1;
+        push @joltage, $max;
+    }
+    $total += join '', @joltage;
+}
+say $total;
