@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+
+use v5.36;
+
+use List::Util qw(max reduce);
+
+my @ranges;
+while (<>) {
+    chomp;
+    last if /^$/;
+    push @ranges, [ split /-/ ];
+}
+@ranges = sort { $a->[0] <=> $b->[0] } @ranges;
+push my @merges, $ranges[0];
+for (@ranges[1..$#ranges]) {
+    if ($_->[0] <= $merges[-1]->[1]) {
+        $merges[-1]->[1] = max($merges[-1]->[1], $_->[1]);
+    } else {
+        push @merges, $_;
+    }
+}
+say reduce { $a + $b } map { $_->[1] - $_->[0] + 1 } @merges;
