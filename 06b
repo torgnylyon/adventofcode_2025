@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+
+use v5.42;
+
+use List::Util qw(reduce);
+
+my @problems;
+while (<>) {
+    my @line = split //;
+    if (/[+*]/) {
+        $problems[$_] = "$line[$_] $problems[$_]" for 0..$#line;
+    } else {
+        $problems[$_] .= $line[$_] for 0..$#line;
+    }
+}
+my @stack;
+my $total = 0;
+for (reverse split ' ', join ' ', @problems) {
+    if ($_ eq '+') {
+        $total += reduce { $a + $b } @stack;
+        @stack = ();
+    } elsif ($_ eq '*') {
+        $total += reduce { $a * $b } @stack;
+        @stack = ();
+    } else {
+        push @stack, $_;
+    }
+}
+say $total;
