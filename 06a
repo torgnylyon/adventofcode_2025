@@ -1,0 +1,18 @@
+#!/usr/bin/perl
+
+use v5.42;
+
+use List::Util qw(reduce);
+
+my @problems;
+while (<>) {
+    my @line = split ' ';
+    for my $i (0..$#line) {
+        unshift @{ $problems[$i] }, $line[$i]
+    }
+}
+my $total = 0;
+for (@problems) {
+    $total += reduce { $_->[0] eq '+' ? $a + $b : $a * $b } @{$_}[1..$#$_];
+}
+say $total;
