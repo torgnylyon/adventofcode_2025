@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+
+use v5.42;
+
+sub read_diagram {
+    my @diagram;
+    while (<>) {
+        chomp;
+        push @diagram, [ split // ];
+    }
+    \@diagram;
+}
+
+my $diagram     = read_diagram();
+my $split_count = 0;
+for (my $i = 1; $i < @$diagram; ++$i) {
+    for (my $j = 0; $j < @{ $diagram->[$i] }; ++$j) {
+        if (       $diagram->[ $i - 1 ][$j] eq 'S'
+                or $diagram->[ $i - 1 ][$j] eq '|') {
+            if ($diagram->[$i][$j] eq '.') {
+                $diagram->[$i][$j] = '|';
+            } elsif ($diagram->[$i][$j] eq '^') {
+                ++$split_count;
+                $diagram->[$i][ $j - 1 ] = $diagram->[$i][ $j + 1 ] = '|';
+            }
+        }
+    }
+}
+say $split_count;
