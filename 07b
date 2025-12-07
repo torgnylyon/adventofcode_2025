@@ -1,0 +1,39 @@
+#!/usr/bin/perl
+
+use v5.42;
+no warnings 'recursion';
+
+sub read_diagram {
+    my @diagram;
+    while (<>) {
+        chomp;
+        push @diagram, [ split // ];
+    }
+    \@diagram;
+}
+
+sub get_entry_location {
+    my $diagram = shift;
+    for (my $i = 0; $i < @{ $diagram->[0] }; ++$i) {
+        return $i if $diagram->[0][$i] eq 'S';
+    }
+}
+
+my %cache;
+
+sub move_beam {
+    my ($diagram, $x, $y) = @_;
+    $x = $x // get_entry_location($diagram);
+    if ($y + 1 == @$diagram) {
+        return 1;
+    } elsif (exists $cache{"$x $y"}) {
+        return $cache{"$x $y"};
+    } elsif ($diagram->[ $y + 1 ][$x] eq '^') {
+        return move_beam($diagram, $x - 1, $y)
+             + move_beam($diagram, $x + 1, $y);
+    } else {
+        return $cache{ "$x " . ($y + 1) } = move_beam($diagram, $x, $y + 1);
+    }
+}
+
+say move_beam(read_diagram(), undef, 0);
