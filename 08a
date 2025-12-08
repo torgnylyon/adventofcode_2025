@@ -1,0 +1,44 @@
+#!/usr/bin/perl
+
+use v5.42;
+
+use List::Util qw(reduce);
+
+sub get_distances {
+    my @distances;
+    for my $i (0..$#_) {
+        for my $j ($i + 1..$#_) {
+            push @distances, [ $i, $j, compute_distance($_[$i], $_[$j]) ];
+        }
+    }
+    @distances;
+}
+
+sub compute_distance {
+    sqrt(($_[0]->[0] - $_[1]->[0]) ** 2
+       + ($_[0]->[1] - $_[1]->[1]) ** 2
+       + ($_[0]->[2] - $_[1]->[2]) ** 2);
+}
+
+sub connect_boxes {
+    my ($circuits, $a, $b) = @_;
+    my @index;
+    for my $i (0..$#$circuits) {
+        $index[0] = $i if grep { $a == $_ } @{ $circuits->[$i] };
+        $index[1] = $i if grep { $b == $_ } @{ $circuits->[$i] };
+    }
+    unless ($index[0] == $index[1]) {
+        push @{ $circuits->[ $index[0] ] }, @{ $circuits->[ $index[1] ] };
+        splice @$circuits, $index[1], 1;
+    }
+}
+
+my (@positions, @circuits, $i);
+while (<>) {
+    chomp;
+    push @positions, [ split /,/ ];
+    push @circuits,  [ $i++ ];
+}
+my @distances = sort { $a->[2] <=> $b->[2] } get_distances(@positions);
+connect_boxes(\@circuits, $distances[$_]->[0], $distances[$_]->[1]) for 0..999;
+say reduce { $a * $b } (sort { $b <=> $a } map { scalar @$_ } @circuits)[0..2];
