@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+
+use v5.42;
+
+sub compute_area {
+    (abs($_[0]->[0] - $_[1]->[0]) + 1) * (abs($_[0]->[1] - $_[1]->[1]) + 1);
+}
+
+my @tiles;
+while (<>) {
+    chomp;
+    push @tiles, [ split /,/ ];
+}
+my $max = 0;
+for my $i (0..$#tiles - 1) {
+    for my $j ($i + 1..$#tiles) {
+        my $area = compute_area($tiles[$i], $tiles[$j]);
+        $max = ($area > $max) ? $area : $max;
+    }
+}
+say $max;
