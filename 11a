@@ -1,0 +1,18 @@
+#!/usr/bin/perl
+
+use v5.42;
+
+sub follow_path {
+    my $n;
+    for (@{ $_[0]->{ $_[1] } }) {
+        $n += $_ eq 'you' ? 0 : $_ eq 'out' ? 1 : follow_path($_[0], $_);
+    }
+    $n;
+}
+
+my %devices;
+while (<>) {
+    /([^:]+):\s*(.*)/;
+    $devices{$1} = [ split / /, $2 ];
+}
+say follow_path(\%devices, 'you');
